@@ -25,7 +25,7 @@ dataframe = pd.read_csv('./assets/data/spotify_songs.csv')
 app.layout = html.Div(className='content', children=[
     html.Header(children=[
         html.H1('Spotify Songs Analysis'),
-        html.H2('From 2010 to 2020')
+        html.H2('2020')
     ]),
     
     # Tabs at the top
@@ -33,11 +33,11 @@ app.layout = html.Div(className='content', children=[
         id='tabs',
         value='tab-1',
         children=[
-            dcc.Tab(label='Heatmap', value='tab-1'),
-            dcc.Tab(label='Line Chart', value='tab-2'),
-            dcc.Tab(label='Histogram', value='tab-3'),
-            dcc.Tab(label='Bar Chart', value='tab-4'),
-            dcc.Tab(label='Scatter Plot', value='tab-5')
+            dcc.Tab(label='Main Visualization', value='tab-1'),
+            dcc.Tab(label='Genre Trends and Market Evolution', value='tab-2'),
+            dcc.Tab(label='Lyrics and Thematic Analysis', value='tab-3'),
+            dcc.Tab(label='Audio & Listener Behavior', value='tab-4'),
+            dcc.Tab(label='Temporal Patterns', value='tab-5')
         ],
         style={'marginTop': '20px'},  # Space between header and tabs
     ),
