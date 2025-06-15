@@ -16,6 +16,7 @@ import dash_core_components as dcc
 from dash.dependencies import Input, Output
 import pandas as pd
 
+from waffle_content import get_waffle_content
 
 app = dash.Dash(__name__)
 app.title = 'Project | INF8808'
@@ -76,17 +77,15 @@ def render_content(tab):
     elif tab == 'tab-2':
         return html.Div([
             html.H3('Lyrics and Thematic Analysis'),
-            html.P('Summary description for this section.'),
+            html.P('This section explores lyrics and vocal styles via speechiness levels.'),
             html.Ul([
                 html.Li('Question 1 targeted by this visualization.'),
                 html.Li('Question 2 targeted by this visualization.')
             ]),
-            dcc.Graph(id='histogram', figure={
-                "data": [],
-                "layout": {"title": "Histogram (Placeholder)"}
-            }),
-            html.P('Possible interactions: ...')
+            get_waffle_content()
         ])
+    
+    
     elif tab == 'tab-3':
         return html.Div([
             html.H3('Audio & Listener Behavior'),
