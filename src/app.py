@@ -1,6 +1,4 @@
-
 # -*- coding: utf-8 -*-
-
 '''
     File name: app.py
     Author: Team 11 - 
@@ -85,11 +83,8 @@ def render_content(tab):
             ]),
             get_waffle_content()
         ])
-    
-    
     elif tab == 'tab-3':
         return get_audio_listener_content()
 
 # Enregistre les callbacks dynamiques (Q12)
 register_callbacks(app)
-
