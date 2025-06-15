@@ -111,9 +111,13 @@ def get_audio_listener_content():
         html.Img(id='kde-image', style={"width": "100%", "maxWidth": "1100px", "marginTop": "20px"})
     ])
 
-# Callback handler to export for app.py
-callbacks = {
-    'output_id': 'kde-image',
-    'input_id': 'genre-dropdown',
-    'function': lambda selected_genres: generate_kde_plot(selected_genres) if selected_genres else ""
-}
+# === Register callback (to be called from app.py)
+def register_callbacks(app):
+    @app.callback(
+        Output('kde-image', 'src'),
+        Input('genre-dropdown', 'value')
+    )
+    def update_kde_image(selected_genres):
+        if not selected_genres:
+            return ""
+        return generate_kde_plot(selected_genres)
