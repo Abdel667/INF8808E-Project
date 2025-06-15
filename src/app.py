@@ -25,7 +25,7 @@ app = dash.Dash(__name__, suppress_callback_exceptions=True)
 app.title = 'Project | INF8808'
 
 # === Load and clean data ===
-dataframe = pd.read_csv('spotify_songs.csv')
+dataframe = pd.read_csv('./assets/data/spotify_songs.csv')
 dataframe['year'] = pd.to_datetime(dataframe['track_album_release_date'], errors='coerce').dt.year
 dataframe['duration_min'] = dataframe['duration_ms'] / 60000
 dataframe = dataframe.dropna(subset=['energy', 'track_popularity', 'playlist_genre'])
