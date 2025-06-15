@@ -67,15 +67,3 @@ button:hover, button:active {
 .xy {
     cursor: default;
 }
-
-#heatmap {
-    width: 60%;
-    height: 90%;
-    margin: 10px;
-}
-
-#line-chart {
-    width: 40%;
-    height: 75%;
-    margin: 10px;
-}
