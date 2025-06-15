@@ -27,53 +27,79 @@ app.layout = html.Div(className='content', children=[
         html.H1('Spotify Songs Analysis'),
         html.H2('2020')
     ]),
-    
-    # Tabs at the top
+
+    # Main visualization section (always visible)
+    html.Div(className='main-viz-section', children=[
+        html.H3('Main Visualization'),
+        html.P('Summary description for the main visualization goes here.'),
+        dcc.Graph(id='main-heatmap', figure={
+            "data": [],
+            "layout": {"title": "Main Heatmap (Placeholder)"}
+        }),
+        html.P('Possible interactions: ...')
+    ]),
+
+    # Tabs for the three themes
     dcc.Tabs(
-        id='tabs',
+        id='theme-tabs',
         value='tab-1',
         children=[
-            dcc.Tab(label='Main Visualization', value='tab-1'),
-            dcc.Tab(label='Genre Trends and Market Evolution', value='tab-2'),
-            dcc.Tab(label='Lyrics and Thematic Analysis', value='tab-3'),
-            dcc.Tab(label='Audio & Listener Behavior', value='tab-4'),
-            dcc.Tab(label='Temporal Patterns', value='tab-5')
+            dcc.Tab(label='Genre Trends and Market Evolution', value='tab-1'),
+            dcc.Tab(label='Lyrics and Thematic Analysis', value='tab-2'),
+            dcc.Tab(label='Audio & Listener Behavior', value='tab-3'),
         ],
-        style={'marginTop': '20px'},  # Space between header and tabs
+        style={'marginTop': '40px'},
     ),
 
-    html.Div(id='tab-content', style={'marginTop': '20px'})  # Space between tabs and graph
+    html.Div(id='tab-content', style={'marginTop': '20px'})
 ])
 
 @app.callback(
     Output('tab-content', 'children'),
-    [Input('tabs', 'value')]
+    [Input('theme-tabs', 'value')]
 )
 def render_content(tab):
     if tab == 'tab-1':
-        return dcc.Graph(id='heatmap', figure={
-            "data": [],
-            "layout": {"title": "Heatmap (Placeholder)"}
-        })
+        return html.Div([
+            html.H3('Genre Trends and Market Evolution'),
+            html.P('Summary description for this section.'),
+            html.Ul([
+                html.Li('Question 1 targeted by this visualization.'),
+                html.Li('Question 2 targeted by this visualization.')
+            ]),
+            dcc.Graph(id='line-chart', figure={
+                "data": [],
+                "layout": {"title": "Line Chart (Placeholder)"}
+            }),
+            html.P('Possible interactions: ...')
+        ])
     elif tab == 'tab-2':
-        return dcc.Graph(id='line-chart', figure={
-            "data": [],
-            "layout": {"title": "Line Chart (Placeholder)"}
-        })
+        return html.Div([
+            html.H3('Lyrics and Thematic Analysis'),
+            html.P('Summary description for this section.'),
+            html.Ul([
+                html.Li('Question 1 targeted by this visualization.'),
+                html.Li('Question 2 targeted by this visualization.')
+            ]),
+            dcc.Graph(id='histogram', figure={
+                "data": [],
+                "layout": {"title": "Histogram (Placeholder)"}
+            }),
+            html.P('Possible interactions: ...')
+        ])
     elif tab == 'tab-3':
-        return dcc.Graph(id='histogram', figure={
-            "data": [],
-            "layout": {"title": "Histogram (Placeholder)"}
-        })
-    elif tab == 'tab-4':
-        return dcc.Graph(id='bar-chart', figure={
-            "data": [],
-            "layout": {"title": "Bar Chart (Placeholder)"}
-        })
-    elif tab == 'tab-5':
-        return dcc.Graph(id='scatter-plot', figure={
-            "data": [],
-            "layout": {"title": "Scatter Plot (Placeholder)"}
-        })
+        return html.Div([
+            html.H3('Audio & Listener Behavior'),
+            html.P('Summary description for this section.'),
+            html.Ul([
+                html.Li('Question 1 targeted by this visualization.'),
+                html.Li('Question 2 targeted by this visualization.')
+            ]),
+            dcc.Graph(id='bar-chart', figure={
+                "data": [],
+                "layout": {"title": "Bar Chart (Placeholder)"}
+            }),
+            html.P('Possible interactions: ...')
+        ])
 
 

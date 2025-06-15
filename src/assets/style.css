@@ -54,6 +54,8 @@ button:hover, button:active {
     flex-direction: column;
     justify-content: space-between;
     height: 100vh;
+    padding: 32px 64px;
+    box-sizing: border-box;
 }
 
 .viz-container{
