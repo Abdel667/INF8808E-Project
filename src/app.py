@@ -17,6 +17,7 @@ from dash.dependencies import Input, Output
 import pandas as pd
 
 from waffle_content import get_waffle_content
+from audio_listener_tab import get_audio_listener_content
 
 app = dash.Dash(__name__)
 app.title = 'Project | INF8808'
@@ -87,18 +88,7 @@ def render_content(tab):
     
     
     elif tab == 'tab-3':
-        return html.Div([
-            html.H3('Audio & Listener Behavior'),
-            html.P('Summary description for this section.'),
-            html.Ul([
-                html.Li('Question 1 targeted by this visualization.'),
-                html.Li('Question 2 targeted by this visualization.')
-            ]),
-            dcc.Graph(id='bar-chart', figure={
-                "data": [],
-                "layout": {"title": "Bar Chart (Placeholder)"}
-            }),
-            html.P('Possible interactions: ...')
-        ])
+        return get_audio_listener_content()
+
 
 
