@@ -17,7 +17,7 @@ from dash.dependencies import Input, Output
 import pandas as pd
 
 from waffle_content import get_waffle_content
-from audio_listener_tab import get_audio_listener_content
+from audio_listener_tab import get_audio_listener_content, register_callbacks
 
 app = dash.Dash(__name__)
 app.title = 'Project | INF8808'
@@ -90,5 +90,6 @@ def render_content(tab):
     elif tab == 'tab-3':
         return get_audio_listener_content()
 
-
+# Enregistre les callbacks dynamiques (Q12)
+register_callbacks(app)
 
