@@ -94,11 +94,27 @@ def render_content(tab):
                     "This section explores lyrics and vocal styles via speechiness levels."
                 ),
                 html.Ul(
-                    [
-                        html.Li("Question 1 targeted by this visualization."),
-                        html.Li("Question 2 targeted by this visualization."),
-                    ]
-                ),
+                [
+                    html.Li("How has the average speechiness of top-performing tracks evolved over the last 20 years? "),
+                    html.Li("Do more popular songs tend to have lower or higher speechiness on average?"),
+                ]
+            ),
+
+            html.H4(" Speechiness Distribution in Popular vs. Less Popular Songs"),
+            html.P(
+                "These side-by-side waffle charts illustrate how speechiness levels "
+                "are distributed among songs with different popularity levels. Each chart "
+                "represents 100% of songs using 100 squares."
+            ),
+            html.Ul([
+                html.Li(" Low (0.0-0.2): Mostly melodic or instrumental"),
+                html.Li(" Medium (0.2-0.5): Balanced between singing and speaking"),
+                html.Li(" High (0.5-1.0): Strong spoken-word characteristics")
+            ]),
+            html.P(
+                "In popular songs (popularity > 60), high speechiness is often dominant, "
+                "while less popular songs tend to have lower or medium speechiness levels."
+            ),
                 get_waffle_content(),
                 get_speechiness_line_chart_content(dataframe),
             ]
