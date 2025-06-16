@@ -18,6 +18,8 @@ from speechiness_line_chart import get_speechiness_line_chart_content
 from waffle_content import get_waffle_content
 from audio_listener_tab import get_audio_listener_content, register_callbacks
 from temporal_pattern_tab import get_temporal_pattern_content
+from genre_trends_tab import get_genre_trends_content, register_genre_trends_callbacks
+from main_visualization import get_main_visualization_content
 from preprocess import load_and_clean_data
 
 app = dash.Dash(__name__)
@@ -29,24 +31,41 @@ df = load_and_clean_data()
 app.layout = html.Div(
     className="content",
     children=[
-        html.Header(children=[html.H1("Spotify Songs Analysis"), html.H2("2020")]),
-        # Main visualization section (always visible)
+        html.Header(
+            children=[
+                html.H1("Spotify Songs Analysis", style={
+                    'textAlign': 'center', 
+                    'color': '#1DB954', 
+                    'marginBottom': '10px',
+                    'fontFamily': 'Arial, sans-serif'
+                }), 
+                html.H2("Music Trends & Market Intelligence", style={
+                    'textAlign': 'center', 
+                    'color': '#666', 
+                    'fontWeight': 'normal',
+                    'fontSize': '18px',
+                    'marginBottom': '30px'
+                })
+            ],
+            style={
+                'backgroundColor': '#191414',
+                'padding': '30px 20px',
+                'marginBottom': '30px'
+            }
+        ),
         html.Div(
             className="main-viz-section",
             children=[
-                html.H3("Main Visualization"),
-                html.P("Summary description for the main visualization goes here."),
-                dcc.Graph(
-                    id="main-heatmap",
-                    figure={
-                        "data": [],
-                        "layout": {"title": "Main Heatmap (Placeholder)"},
-                    },
-                ),
-                html.P("Possible interactions: ..."),
+                get_main_visualization_content()
             ],
+            style={
+                'backgroundColor': 'white',
+                'padding': '20px',
+                'marginBottom': '20px',
+                'borderRadius': '10px',
+                'boxShadow': '0 2px 10px rgba(0,0,0,0.1)'
+            }
         ),
-        # Tabs for the three themes
         dcc.Tabs(
             id="theme-tabs",
             value="tab-1",
@@ -57,35 +76,26 @@ app.layout = html.Div(
                 dcc.Tab(label="Temporal Pattern", value="tab-4"),
             ],
             style={"marginTop": "40px"},
+            colors={
+                "border": "#1DB954",
+                "primary": "#1DB954",
+                "background": "#f8f9fa"
+            }
         ),
         html.Div(id="tab-content", style={"marginTop": "20px"}),
     ],
+    style={
+        'backgroundColor': '#f5f5f5',
+        'minHeight': '100vh',
+        'fontFamily': 'Arial, sans-serif'
+    }
 )
 
 
 @app.callback(Output("tab-content", "children"), [Input("theme-tabs", "value")])
 def render_content(tab):
     if tab == "tab-1":
-        return html.Div(
-            [
-                html.H3("Genre Trends and Market Evolution"),
-                html.P("Summary description for this section."),
-                html.Ul(
-                    [
-                        html.Li("Question 1 targeted by this visualization."),
-                        html.Li("Question 2 targeted by this visualization."),
-                    ]
-                ),
-                dcc.Graph(
-                    id="line-chart",
-                    figure={
-                        "data": [],
-                        "layout": {"title": "Line Chart (Placeholder)"},
-                    },
-                ),
-                html.P("Possible interactions: ..."),
-            ]
-        )
+        return get_genre_trends_content()
     elif tab == "tab-2":
         return html.Div(
             [
@@ -117,10 +127,24 @@ def render_content(tab):
             ),
                 get_waffle_content(),
                 get_speechiness_line_chart_content(dataframe),
-            ]
+            ],
+            style={
+                'backgroundColor': 'white',
+                'padding': '20px',
+                'borderRadius': '10px',
+                'boxShadow': '0 2px 10px rgba(0,0,0,0.1)'
+            }
         )
     elif tab == "tab-3":
-        return get_audio_listener_content()
+        return html.Div(
+            children=[get_audio_listener_content()],
+            style={
+                'backgroundColor': 'white',
+                'padding': '20px',
+                'borderRadius': '10px',
+                'boxShadow': '0 2px 10px rgba(0,0,0,0.1)'
+            }
+        )
     elif tab == "tab-4":
         return html.Div(
             [
@@ -140,9 +164,18 @@ def render_content(tab):
                 html.P(
                     "Possible interactions: Hover over points for song details. Note the density distribution for different genres across seasons."
                 ),
-            ]
+            ],
+            style={
+                'backgroundColor': 'white',
+                'padding': '20px',
+                'borderRadius': '10px',
+                'boxShadow': '0 2px 10px rgba(0,0,0,0.1)'
+            }
         )
 
 
-# Enregistre les callbacks dynamiques (Q12)
-register_callbacks(app)
+register_callbacks(app)  # Tab 3
+register_genre_trends_callbacks(app)  # Tab 1
+
+if __name__ == '__main__':
+    app.run_server(debug=True)
