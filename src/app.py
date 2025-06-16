@@ -14,6 +14,7 @@ import dash_core_components as dcc
 from dash.dependencies import Input, Output
 import pandas as pd
 
+from speechiness_line_chart import get_speechiness_line_chart_content
 from waffle_content import get_waffle_content
 from audio_listener_tab import get_audio_listener_content, register_callbacks
 from temporal_pattern_tab import get_temporal_pattern_content
@@ -99,6 +100,7 @@ def render_content(tab):
                     ]
                 ),
                 get_waffle_content(),
+                get_speechiness_line_chart_content(dataframe),
             ]
         )
     elif tab == "tab-3":
