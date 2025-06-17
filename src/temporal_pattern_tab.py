@@ -16,45 +16,7 @@ SEASON_TO_INDEX = {season: i for i, season in enumerate(SEASON_ORDER)}
 np.random.seed(NP_RANDOM_SEED)
 
 
-def _calculate_custom_y_jitter(df: pd.DataFrame) -> pd.DataFrame:
-    df_with_jitter = df.copy()
-    df_with_jitter["custom_y_jitter"] = 0.0
-
-    for season in SEASON_ORDER:
-        df_season_idx = df_with_jitter["season"] == season
-        df_season = df_with_jitter[df_season_idx].copy()
-
-        df_season["popularity_bin"] = (
-            np.floor(df_season["track_popularity"] / BIN_SIZE) * BIN_SIZE
-        )
-        df_season = df_season.sort_values(by="popularity_bin")
-
-        current_bin = None
-        stack_counter = 0
-
-        for idx, row in df_season.iterrows():
-            if row["popularity_bin"] != current_bin:
-                current_bin = row["popularity_bin"]
-                stack_counter = 0
-
-            y_offset = (
-                (stack_counter // 2 + 1)
-                * JITTER_STEP_Y
-                * (-1 if stack_counter % 2 else 1)
-            )
-            stack_counter += 1
-
-            if abs(y_offset) > MAX_JITTER_RANGE_Y:
-                y_offset = np.sign(y_offset) * MAX_JITTER_RANGE_Y
-
-            df_with_jitter.loc[idx, "custom_y_jitter"] = y_offset
-
-    return df_with_jitter
-
-
-def _compute_plot_positions(df: pd.DataFrame) -> pd.DataFrame:
-    df_with_jitter = _calculate_custom_y_jitter(df)
-
+def compute_plot_positions(df_with_jitter: pd.DataFrame) -> pd.DataFrame:
     df_with_jitter["custom_x_jitter"] = (
         np.random.rand(len(df_with_jitter)) - 0.5
     ) * X_JITTER_MAGNITUDE
@@ -71,7 +33,9 @@ def _compute_plot_positions(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def get_temporal_pattern_content(df: pd.DataFrame):
-    df_plot_ready = _compute_plot_positions(df)
+    print("what")
+    df_plot_ready = compute_plot_positions(df)
+    print("what")
 
     fig = go.Figure()
 
@@ -81,7 +45,7 @@ def get_temporal_pattern_content(df: pd.DataFrame):
         category: px.colors.qualitative.Bold[i % len(px.colors.qualitative.Bold)]
         for i, category in enumerate(unique_color_categories)
     }
-    legend_title = "Playlist Genre"
+    legend_title = "Genre"
 
     for category_name in unique_color_categories:
         df_filtered = df_plot_ready[
@@ -105,7 +69,6 @@ def get_temporal_pattern_content(df: pd.DataFrame):
                         f"<b>{legend_title.replace(' ', '')}</b>: {category_name}<br>"
                         + "<b>Season</b>: %{customdata[4]}<br>"
                         + "<b>Popularity</b>: %{x:.2f}<br>"
-                        + "<b>Original Pop.</b>: %{customdata[3]}<br>"
                         + "<b>Track</b>: %{customdata[0]}<br>"
                         + "<b>Artist</b>: %{customdata[1]}<br>"
                         + "<b>Release Date</b>: %{customdata[2]|%Y-%m-%d}<extra></extra>"
@@ -123,11 +86,12 @@ def get_temporal_pattern_content(df: pd.DataFrame):
                 )
             )
 
+    print("done")
     fig.update_layout(
-        title="Song Popularity by Release Season & Genre (Manual Jitter)",
+        title="Song Popularity by Release Season & Genre",
         plot_bgcolor="white",
         xaxis=dict(
-            title="Track Popularity Score (no horizontal jitter for now)",
+            title="Track Popularity Score",
             range=[0, 100],
             showgrid=True,
             gridcolor="LightGray",
@@ -151,4 +115,5 @@ def get_temporal_pattern_content(df: pd.DataFrame):
         font=dict(size=12),
     )
 
+    print("done")
     return fig
