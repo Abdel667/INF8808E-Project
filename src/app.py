@@ -183,8 +183,10 @@ register_genre_trends_callbacks(app)  # Tab 1
 
 if __name__ == "__main__":
     app.run_server(debug=True)
+
+
 # register route health check
-@app.server.route('/health')
+@app.server.route("/health")
 def health_check():
     """
     Health check endpoint for the server.
@@ -192,5 +194,7 @@ def health_check():
         str: "OK" if the server is running.
     """
     return "OK"
-if __name__ == '__main__':
+
+
+if __name__ == "__main__":
     app.run_server(debug=True)

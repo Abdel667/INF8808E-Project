@@ -1,5 +1,6 @@
 import plotly.graph_objects as go
 
+
 def generate_waffle_figure(counts, title):
     total_squares = 100
     n_rows = 10
@@ -8,7 +9,7 @@ def generate_waffle_figure(counts, title):
     color_map = {
         "Low (0.0–0.2)": "#A6CEE3",
         "Medium (0.2–0.5)": "#1F78B4",
-        "High (0.5–1.0)": "#33A02C"
+        "High (0.5–1.0)": "#33A02C",
     }
 
     # Préparer les blocs
@@ -17,7 +18,9 @@ def generate_waffle_figure(counts, title):
     for category, value in counts.items():
         proportion = int(round(value / sum(counts.values()) * total_squares))
         category_blocks.extend([category] * proportion)
-        hover_texts.extend([f"{category}<br>{(value / sum(counts.values()) * 100):.1f}%"] * proportion)
+        hover_texts.extend(
+            [f"{category}<br>{(value / sum(counts.values()) * 100):.1f}%"] * proportion
+        )
 
     while len(category_blocks) < total_squares:
         category_blocks.append("")
@@ -43,22 +46,22 @@ def generate_waffle_figure(counts, title):
             marker=dict(
                 size=38,
                 color=colors,
-                symbol='square',
-                line=dict(color='#DDDDDD', width=1)
+                symbol="square",
+                line=dict(color="#DDDDDD", width=1),
             ),
             text=hover_texts,
-            hoverinfo="text"
+            hoverinfo="text",
         )
     )
 
     fig.update_layout(
-        title=dict(text=title, font=dict(size=18, family='Arial Black')),
+        title=dict(text=title, font=dict(size=18, family="Arial Black")),
         xaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
         yaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
         margin=dict(l=20, r=20, t=50, b=20),
         height=420,
-        plot_bgcolor='white',
-        showlegend=False
+        plot_bgcolor="white",
+        showlegend=False,
     )
 
     return fig
