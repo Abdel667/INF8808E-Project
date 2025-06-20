@@ -7,12 +7,10 @@ import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
 
-# === Données ===
 df = pd.read_csv("./assets/data/spotify_songs.csv")
 df["year"] = pd.to_datetime(df["track_album_release_date"], errors="coerce").dt.year
 df["duration_min"] = df["duration_ms"] / 60000
 
-# === Q9 ===
 df_q9 = df.dropna(subset=["year", "duration_min", "track_popularity"])
 df_q9 = df_q9[df_q9["track_popularity"] >= 60]
 df_q9 = df_q9[df_q9["year"] >= 2000]
@@ -36,7 +34,6 @@ fig_q9.update_layout(
     height=600,
 )
 
-# === Q10 & Q11 ===
 df_q10 = df.dropna(
     subset=["danceability", "tempo", "track_popularity", "playlist_genre"]
 )
@@ -59,7 +56,6 @@ fig_q10 = px.scatter(
 )
 fig_q10.update_layout(autosize=True, height=600)
 
-# === Q12 – Lissage manuel (style KDE) sans scipy ===
 df_q12 = df.dropna(subset=["energy", "track_popularity", "playlist_genre"])
 genres = sorted(df_q12["playlist_genre"].unique())
 
@@ -73,13 +69,11 @@ def generate_energy_distribution(selected_genres):
             x = subset["energy"].values
             w = subset["track_popularity"].values
 
-            # Histogramme pondéré
             hist, bin_edges = np.histogram(
                 x, bins=50, range=(0, 1), weights=w, density=True
             )
             bin_centers = (bin_edges[:-1] + bin_edges[1:]) / 2
 
-            # Lissage simple par convolution (fausse KDE)
             smoothed = np.convolve(hist, np.ones(5) / 5, mode="same")
 
             fig.add_trace(
@@ -102,7 +96,6 @@ def generate_energy_distribution(selected_genres):
     return fig
 
 
-# === Layout & Callbacks pour Tab 3 ===
 def get_audio_listener_content():
     return html.Div(
         [

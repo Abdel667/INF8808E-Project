@@ -178,14 +178,13 @@ def render_content(tab):
         )
 
 
-register_callbacks(app)  # Tab 3
-register_genre_trends_callbacks(app)  # Tab 1
+register_callbacks(app)
+register_genre_trends_callbacks(app)
 
 if __name__ == "__main__":
     app.run_server(debug=True)
 
 
-# register route health check
 @app.server.route("/health")
 def health_check():
     """

@@ -1,5 +1,4 @@
 import pandas as pd
-import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
@@ -15,9 +14,8 @@ def load_main_data():
     )
     df["year"] = df["track_album_release_date"].dt.year
 
-    # Clean data
     df = df.dropna(subset=["year", "track_popularity", "playlist_genre"])
-    df = df[df["year"] >= 1960]  # Keep broader range for main viz
+    df = df[df["year"] >= 1960]
 
     return df
 
@@ -170,7 +168,6 @@ def create_kpi_cards(kpis):
 
 def generate_main_overview_charts(df):
     """Generate the main overview charts with improved genre visualization"""
-    # Create a subplot with 2x2 layout but replace pie chart with horizontal bar chart
     fig = make_subplots(
         rows=2,
         cols=2,
@@ -188,7 +185,6 @@ def generate_main_overview_charts(df):
         vertical_spacing=0.15,
     )
 
-    # 1. Genre Distribution (Horizontal Bar Chart - IMPROVED!)
     genre_counts = df["playlist_genre"].value_counts()
     genre_percentages = (genre_counts / len(df) * 100).round(1)
     colors_bar = ["#ff7f0e", "#d62728", "#2ca02c", "#9467bd", "#8c564b", "#e377c2"]
@@ -210,7 +206,6 @@ def generate_main_overview_charts(df):
         col=1,
     )
 
-    # 2. Songs by Decade (Vertical Bar Chart)
     df["decade"] = (df["year"] // 10) * 10
     decade_counts = df["decade"].value_counts().sort_index()
     decade_labels = [f"{int(d)}s" for d in decade_counts.index]
@@ -227,7 +222,6 @@ def generate_main_overview_charts(df):
         col=2,
     )
 
-    # 3. Average Audio Features (Vertical Bar Chart)
     audio_features = [
         "danceability",
         "energy",
@@ -250,7 +244,6 @@ def generate_main_overview_charts(df):
         col=1,
     )
 
-    # 4. Popularity Distribution (Histogram)
     fig.add_trace(
         go.Histogram(
             x=df["track_popularity"],
@@ -263,7 +256,6 @@ def generate_main_overview_charts(df):
         col=2,
     )
 
-    # Update layout
     fig.update_layout(
         height=700,
         showlegend=False,
@@ -272,23 +264,17 @@ def generate_main_overview_charts(df):
         title_font_size=20,
     )
 
-    # Update axes for better readability
-    # Genre chart - make y-axis more readable
     fig.update_yaxes(automargin=True, row=1, col=1)
     fig.update_xaxes(title_text="Percentage (%)", row=1, col=1)
 
-    # Audio features chart - rotate labels
     fig.update_xaxes(tickangle=45, row=2, col=1)
 
-    # Decade chart
     fig.update_xaxes(title_text="Decade", row=1, col=2)
     fig.update_yaxes(title_text="Number of Songs", row=1, col=2)
 
-    # Popularity chart
     fig.update_xaxes(title_text="Popularity Score", row=2, col=2)
     fig.update_yaxes(title_text="Count", row=2, col=2)
 
-    # Audio features chart
     fig.update_yaxes(title_text="Average Score", row=2, col=1)
 
     return fig
@@ -296,7 +282,6 @@ def generate_main_overview_charts(df):
 
 def generate_timeline_overview(df):
     """Generate a timeline showing data coverage and key metrics over time"""
-    # Group by year and calculate metrics
     yearly_stats = (
         df.groupby("year")
         .agg(
@@ -311,7 +296,6 @@ def generate_timeline_overview(df):
 
     yearly_stats.columns = ["year", "song_count", "avg_popularity", "genre_diversity"]
 
-    # Create timeline chart
     fig = make_subplots(
         rows=3,
         cols=1,
@@ -324,7 +308,6 @@ def generate_timeline_overview(df):
         vertical_spacing=0.08,
     )
 
-    # Songs per year
     fig.add_trace(
         go.Scatter(
             x=yearly_stats["year"],
@@ -340,7 +323,6 @@ def generate_timeline_overview(df):
         col=1,
     )
 
-    # Average popularity
     fig.add_trace(
         go.Scatter(
             x=yearly_stats["year"],
@@ -354,7 +336,6 @@ def generate_timeline_overview(df):
         col=1,
     )
 
-    # Genre diversity
     fig.add_trace(
         go.Scatter(
             x=yearly_stats["year"],
@@ -377,7 +358,6 @@ def generate_timeline_overview(df):
         title_x=0.5,
     )
 
-    # Update axes labels
     fig.update_xaxes(title_text="Year", row=3, col=1)
     fig.update_yaxes(title_text="Number of Songs", row=1, col=1)
     fig.update_yaxes(title_text="Popularity Score", row=2, col=1)
@@ -393,7 +373,6 @@ def get_main_visualization_content():
 
     return html.Div(
         [
-            # Header section
             html.Div(
                 [
                     html.H3(

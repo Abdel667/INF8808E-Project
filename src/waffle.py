@@ -12,7 +12,6 @@ def generate_waffle_figure(counts, title):
         "High (0.5–1.0)": "#33A02C",
     }
 
-    # Préparer les blocs
     category_blocks = []
     hover_texts = []
     for category, value in counts.items():

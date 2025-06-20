@@ -1,8 +1,5 @@
 import pandas as pd
-import numpy as np
-import plotly.express as px
 import plotly.graph_objects as go
-from plotly.subplots import make_subplots
 
 import dash_core_components as dcc
 import dash_html_components as html
@@ -33,7 +30,6 @@ def generate_genre_evolution_chart(df):
 
     fig = go.Figure()
 
-    # Define colors for each genre
     colors = {
         "pop": "#ff7f0e",
         "rock": "#d62728",
@@ -75,34 +71,28 @@ def generate_genre_evolution_chart(df):
 
 def generate_subgenre_heatmap(df):
     """Generate heatmap showing subgenre performance across time periods"""
-    # time periods
     df["period"] = pd.cut(
         df["year"],
         bins=[1999, 2004, 2008, 2012, 2016, 2021],
         labels=["2000-2004", "2005-2008", "2009-2012", "2013-2016", "2017-2020"],
     )
 
-    # Average popularity by subgenre and period
     subgenre_heatmap_data = (
         df.groupby(["playlist_subgenre", "period"])["track_popularity"]
         .mean()
         .reset_index()
     )
 
-    # Pivot for heatmap
     heatmap_pivot = subgenre_heatmap_data.pivot(
         index="playlist_subgenre", columns="period", values="track_popularity"
     )
 
-    # Fill NaN values with 0
     heatmap_pivot = heatmap_pivot.fillna(0)
     heatmap_pivot["avg"] = heatmap_pivot.mean(axis=1)
-    # sort by overall average
     heatmap_pivot = heatmap_pivot.sort_values("avg", ascending=False).drop(
         "avg", axis=1
     )
 
-    # Take top 15 subgenres to avoid overcrowding
     heatmap_pivot = heatmap_pivot.head(15)
 
     fig = go.Figure(
@@ -132,7 +122,6 @@ def generate_subgenre_heatmap(df):
 
 def generate_audio_features_radar(df, selected_genre="pop"):
     """Generate radar chart showing audio features for selected genre"""
-    # Audio features
     features = [
         "danceability",
         "energy",
@@ -142,10 +131,8 @@ def generate_audio_features_radar(df, selected_genre="pop"):
         "speechiness",
     ]
 
-    # Average features for the selected genre
     genre_features = df[df["playlist_genre"] == selected_genre][features].mean()
 
-    # Overall average for comparison
     overall_features = df[features].mean()
 
     fig = go.Figure()
@@ -183,7 +170,6 @@ def generate_audio_features_radar(df, selected_genre="pop"):
 
 def generate_growth_analysis(df):
     """Analyze genre growth rates over time"""
-    # Popularity by genre for first and last 3 years
     early_period = (
         df[df["year"].between(2000, 2002)]
         .groupby("playlist_genre")["track_popularity"]
@@ -212,7 +198,6 @@ def generate_growth_analysis(df):
 
     fig = go.Figure()
 
-    # Color bars based on positive/negative growth
     colors = ["#d62728" if x < 0 else "#2ca02c" for x in growth_df["Growth"]]
 
     fig.add_trace(
@@ -244,7 +229,6 @@ def get_genre_trends_content():
 
     return html.Div(
         [
-            # Description section
             html.Div(
                 [
                     html.H3("Genre Trends and Market Evolution"),
@@ -272,7 +256,6 @@ def get_genre_trends_content():
                 ],
                 style={"marginBottom": "30px"},
             ),
-            # Genre Evolution Line Chart
             html.Div(
                 [
                     html.H4("Genre Popularity Evolution Over Time"),
@@ -287,7 +270,6 @@ def get_genre_trends_content():
                 ],
                 style={"marginBottom": "40px"},
             ),
-            # Growth Analysis
             html.Div(
                 [
                     html.H4("Genre Growth Analysis"),
@@ -302,7 +284,6 @@ def get_genre_trends_content():
                 ],
                 style={"marginBottom": "40px"},
             ),
-            # Subgenre Heatmap
             html.Div(
                 [
                     html.H4("Top Subgenres Performance Across Time Periods"),
@@ -317,7 +298,6 @@ def get_genre_trends_content():
                 ],
                 style={"marginBottom": "40px"},
             ),
-            # Audio Features Analysis
             html.Div(
                 [
                     html.H4("Audio Features Profile by Genre"),
