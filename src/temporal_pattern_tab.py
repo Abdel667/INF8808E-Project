@@ -33,9 +33,7 @@ def compute_plot_positions(df_with_jitter: pd.DataFrame) -> pd.DataFrame:
 
 
 def get_temporal_pattern_content(df: pd.DataFrame):
-    print("what")
     df_plot_ready = compute_plot_positions(df)
-    print("what")
 
     fig = go.Figure()
 
@@ -86,7 +84,6 @@ def get_temporal_pattern_content(df: pd.DataFrame):
                 )
             )
 
-    print("done")
     fig.update_layout(
         title="Song Popularity by Release Season & Genre",
         plot_bgcolor="white",
@@ -115,5 +112,4 @@ def get_temporal_pattern_content(df: pd.DataFrame):
         font=dict(size=12),
     )
 
-    print("done")
     return fig
