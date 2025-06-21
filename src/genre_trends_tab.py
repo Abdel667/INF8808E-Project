@@ -15,7 +15,8 @@ def load_data():
     df["year"] = df["track_album_release_date"].dt.year
 
     df = df.dropna(
-        subset=["year", "track_popularity", "playlist_genre", "playlist_subgenre"]
+        subset=["year", "track_popularity",
+                "playlist_genre", "playlist_subgenre"]
     )
     df = df[df["year"] >= 2000]
 
@@ -25,7 +26,8 @@ def load_data():
 def generate_genre_evolution_chart(df):
     """Generate line chart showing genre popularity evolution over time"""
     genre_evolution = (
-        df.groupby(["year", "playlist_genre"])["track_popularity"].mean().reset_index()
+        df.groupby(["year", "playlist_genre"])[
+            "track_popularity"].mean().reset_index()
     )
 
     fig = go.Figure()
@@ -60,11 +62,18 @@ def generate_genre_evolution_chart(df):
         title="Genre Popularity Evolution (2000-2020)",
         xaxis_title="Year",
         yaxis_title="Average Popularity Score",
+        margin=dict(l=80, r=40, t=60, b=50),
         template="plotly_white",
         height=500,
         hovermode="x unified",
-        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+        legend=dict(orientation="h", yanchor="bottom",
+                    y=1.02, xanchor="right", x=1),
     )
+
+    fig.update_yaxes(title_standoff=25)
+    fig.update_xaxes(title_standoff=15)
+
+    fig.update_layout(dragmode="select")
 
     return fig
 
@@ -74,7 +83,8 @@ def generate_subgenre_heatmap(df):
     df["period"] = pd.cut(
         df["year"],
         bins=[1999, 2004, 2008, 2012, 2016, 2021],
-        labels=["2000-2004", "2005-2008", "2009-2012", "2013-2016", "2017-2020"],
+        labels=["2000-2004", "2005-2008",
+                "2009-2012", "2013-2016", "2017-2020"],
     )
 
     subgenre_heatmap_data = (
@@ -131,7 +141,8 @@ def generate_audio_features_radar(df, selected_genre="pop"):
         "speechiness",
     ]
 
-    genre_features = df[df["playlist_genre"] == selected_genre][features].mean()
+    genre_features = df[df["playlist_genre"]
+                        == selected_genre][features].mean()
 
     overall_features = df[features].mean()
 
@@ -189,7 +200,8 @@ def generate_growth_analysis(df):
     ).fillna(0)
 
     growth_df["Growth"] = (
-        growth_df["Late Period (2018-2020)"] - growth_df["Early Period (2000-2002)"]
+        growth_df["Late Period (2018-2020)"] -
+        growth_df["Early Period (2000-2002)"]
     )
     growth_df["Growth %"] = (
         growth_df["Growth"] / growth_df["Early Period (2000-2002)"]
@@ -318,7 +330,8 @@ def get_genre_trends_content():
                             ),
                         ]
                     ),
-                    dcc.Graph(id="audio-features-radar", config={"responsive": True}),
+                    dcc.Graph(id="audio-features-radar",
+                              config={"responsive": True}),
                 ]
             ),
         ]
@@ -329,7 +342,8 @@ def register_genre_trends_callbacks(app):
     """Register callbacks for interactive components"""
 
     @app.callback(
-        Output("audio-features-radar", "figure"), [Input("genre-selector", "value")]
+        Output("audio-features-radar",
+               "figure"), [Input("genre-selector", "value")]
     )
     def update_radar_chart(selected_genre):
         df = load_data()

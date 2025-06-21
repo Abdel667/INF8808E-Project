@@ -4,6 +4,8 @@ from plotly.subplots import make_subplots
 
 import dash_core_components as dcc
 import dash_html_components as html
+from dash.dependencies import Input, Output
+
 
 
 def load_main_data():
@@ -356,12 +358,13 @@ def generate_timeline_overview(df):
         showlegend=False,
         title_text="Dataset Timeline Overview",
         title_x=0.5,
+        margin=dict(l=80, r=20, t=80, b=60),
     )
 
-    fig.update_xaxes(title_text="Year", row=3, col=1)
-    fig.update_yaxes(title_text="Number of Songs", row=1, col=1)
-    fig.update_yaxes(title_text="Popularity Score", row=2, col=1)
-    fig.update_yaxes(title_text="Number of Genres", row=3, col=1)
+    fig.update_xaxes(title_text="Year", row=3, col=1, title_standoff=15)
+    fig.update_yaxes(title_text="Number of Songs", row=1, col=1, title_standoff=20)
+    fig.update_yaxes(title_text="Popularity Score", row=2, col=1, title_standoff=20)
+    fig.update_yaxes(title_text="Genre Diversity", row=3, col=1, title_standoff=20)
 
     return fig
 
@@ -474,3 +477,61 @@ def get_main_visualization_content():
             ),
         ]
     )
+def register_main_visualization_callbacks(app):
+    """Link interactions: clicking on genre or decade filters other charts and highlights selection"""
+    @app.callback(
+        Output('main-overview-charts', 'figure'),
+        [Input('main-overview-charts', 'clickData')]
+    )
+    def crossfilter_and_highlight(clickData):
+        # Full dataset and base figure
+        df_full = load_main_data()
+        fig = generate_main_overview_charts(df_full)
+
+        # If a bar was clicked
+        if clickData and 'points' in clickData:
+            pt = clickData['points'][0]
+            curve = pt.get('curveNumber', 0)
+
+            # === Genre Distribution clicked ===
+            if curve == 0 and 'y' in pt:
+                selected_genre = pt['y']
+                df2 = df_full[df_full['playlist_genre'] == selected_genre]
+
+                # Highlight selected bar in trace 0
+                op0 = [1.0 if y == selected_genre else 0.3 for y in fig.data[0].y]
+                fig.data[0].marker.opacity = op0
+
+                # Update Songs by Decade (trace 1) with filtered data
+                decades = (df2['year']//10*10).value_counts().sort_index()
+                labels = [f"{int(d)}s" for d in decades.index]
+                fig.data[1].x = labels
+                fig.data[1].y = decades.values
+                fig.data[1].marker.opacity = [1.0]*len(labels)
+
+                # Update Audio Features bar (trace 2)
+                feats = ['danceability','energy','valence','acousticness','speechiness','instrumentalness']
+                av = df2[feats].mean()
+                fig.data[2].y = av.values
+
+                # Update Popularity Distribution (trace 3)
+                fig.data[3].x = df2['track_popularity']
+
+            # === Songs by Decade clicked ===
+            elif curve == 1 and 'x' in pt:
+                selected_decade = int(str(pt['x'])[:-1])
+                df2 = df_full[(df_full['year']//10*10) == selected_decade]
+
+                # Highlight selected bar in trace 1
+                op1 = [1.0 if lbl == pt['x'] else 0.3 for lbl in fig.data[1].x]
+                fig.data[1].marker.opacity = op1
+
+                # Update Audio Features bar (trace 2)
+                feats = ['danceability','energy','valence','acousticness','speechiness','instrumentalness']
+                av = df2[feats].mean()
+                fig.data[2].y = av.values
+
+                # Update Popularity Distribution (trace 3)
+                fig.data[3].x = df2['track_popularity']
+
+        return fig

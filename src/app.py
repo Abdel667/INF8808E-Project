@@ -19,7 +19,7 @@ from waffle_content import get_waffle_content
 from audio_listener_tab import get_audio_listener_content, register_callbacks
 from temporal_pattern_tab import get_temporal_pattern_content
 from genre_trends_tab import get_genre_trends_content, register_genre_trends_callbacks
-from main_visualization import get_main_visualization_content
+from main_visualization import get_main_visualization_content, register_main_visualization_callbacks
 from preprocess import load_and_clean_data, calculate_custom_jitter
 
 app = dash.Dash(__name__)
@@ -180,6 +180,9 @@ def render_content(tab):
 
 register_callbacks(app)
 register_genre_trends_callbacks(app)
+# Enregistre les callbacks de cross-filtering sur le graphique principal
+register_main_visualization_callbacks(app)
+
 
 if __name__ == "__main__":
     app.run_server(debug=True)
